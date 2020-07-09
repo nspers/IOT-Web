@@ -1,0 +1,105 @@
+<template>
+    <div class="login">
+        <Card>
+            <form @submit.prevent="register()" class="clearfix">
+                <Divider orientation="left"><img src="../assets/img/logo.png" /></Divider>
+                <!-- <Input v-model="id" size="large" placeholder="User Name" clearable />
+                <Input v-model="pd" size="large" type="password" placeholder="Password" clearable /> -->
+
+                <div class="ivu-input-wrapper ivu-input-wrapper-large ivu-input-type">
+                    <input v-model="id" autocomplete="off" spellcheck="false" placeholder="User Name" type="text" class="ivu-input ivu-input-large" required>
+                </div>
+
+                <div class="ivu-input-wrapper ivu-input-wrapper-large ivu-input-type">
+                    <input v-model="pd" autocomplete="off" spellcheck="false" placeholder="Password" type="password" class="ivu-input ivu-input-large" required>
+                </div>
+                <p style="color:red;" v-if="code4">用户名密码错误！</p>
+                <button type="submit" class="ivu-btn ivu-btn-primary ivu-btn-long ivu-btn-large"><span>Login</span></button>
+                <!-- <Input v-model="captchaInp" size="large" placeholder="Captcha" clearable style="width:186px;" />
+                <img :src="captcha" alt="captcha" @click="captcha = captcha + Math.floor(Math.random()*10 + 1)"> -->
+                <!-- <Button type="primary" long size="large" @click="register()">Login</Button> -->
+            </form>
+        </Card>
+    </div>
+</template>
+<script>
+
+
+export default {
+    name: 'App',
+    data(){
+        return{
+            loading:false,
+            code4:false,
+            id: '',
+            pd: '',
+            // captcha:'http://localhost:3000/captcha?',
+            // captchaInp:''
+        }
+    },
+    created:function() {
+        if(this.$route.params.reload){
+            location.reload()
+        }
+        var lett = this;
+        // document.onkeydown = function(e) {
+        //     var key = window.event.keyCode;
+        //     if (key == 13) {
+        //         lett.register();
+        //     }
+        // }
+        // this.$api.delete('sysMenu/deleteMenu/275').then(function(res){
+
+        // })
+    },
+    mounted(){
+    },
+    components:{
+    },
+    methods:{
+        register(){
+            if(this.id && this.pd){
+                var self = this
+                self.code4 = false
+                this.$api.post('user/login',{account:this.id,password:this.pd},{withCredentials:true}).then(function(res){
+                    if(res.code == 0){
+                        sessionStorage.setItem('token',res.seesionId)                    
+                        // self.$api.get('sysMenu/selectMenuList').then(function(res){
+                        //     sessionStorage.setItem('menu',JSON.stringify(res.data))
+                        //     self.$store.state.menu = JSON.stringify(res.data)
+                        //     let dataRouter = [
+                        //         {
+                        //             path: '/deploy',
+                        //             name: 'deploy',
+                        //             component: self.$getViews('deploy'),
+                        //             children: []
+                        //         }
+                        //     ]                            
+                        //     for(let i = 0;i < res.data.length; i++){
+                        //         for (let s = 0; s < res.data[i].childList.length; s++){
+                        //             let data = {}
+                        //             data['path'] = '/' + res.data[i].childList[s].url
+                        //             data['name'] = res.data[i].childList[s].url
+                        //             data['component'] = self.$getViews(res.data[i].childList[s].url)
+                        //             dataRouter[0].children.push(data)
+                        //         }
+                        //     }                            
+                        //     sessionStorage.setItem('router',JSON.stringify(dataRouter))
+                        //     self.$router.addRoutes(dataRouter)
+                           
+                        //     self.$router.push({path:'config'})
+
+                        //     console.log(self.$router);
+                        // })
+
+                            self.$router.push({path:'/deploy/loop'})
+                        // self.$router.push({name:'use',params:{reload:1}})
+                    }else{
+                        self.code4 = true
+                    }
+                })
+            }
+        }
+    }
+    }
+</script>
